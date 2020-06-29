@@ -26,6 +26,9 @@ open class WSTagsField: UIScrollView {
 
     /// Dedicated text field delegate.
     open weak var textDelegate: UITextFieldDelegate?
+    
+    open var shouldShowHashtagSymbol : Bool = false
+
 
     /// Background color for tag view in normal (non-selected) state.
     open override var tintColor: UIColor! {
@@ -367,7 +370,7 @@ open class WSTagsField: UIScrollView {
     }
 
     open func addTag(_ tag: String) {
-        addTag(WSTag(tag))
+        addTag(WSTag(tag,shouldShowHashtagSymbol: self.shouldShowHashtagSymbol))
     }
 
     open func addTag(_ tag: WSTag) {
@@ -432,7 +435,7 @@ open class WSTagsField: UIScrollView {
     }
 
     open func removeTag(_ tag: String) {
-        removeTag(WSTag(tag))
+        removeTag(WSTag(tag, shouldShowHashtagSymbol: shouldShowHashtagSymbol))
     }
 
     open func removeTag(_ tag: WSTag) {
@@ -464,7 +467,7 @@ open class WSTagsField: UIScrollView {
     open func tokenizeTextFieldText() -> WSTag? {
         let text = self.textField.text?.trimmingCharacters(in: CharacterSet.whitespaces) ?? ""
         if text.isEmpty == false && (onVerifyTag?(self, text) ?? true) {
-            let tag = WSTag(text)
+            let tag = WSTag(text, shouldShowHashtagSymbol : shouldShowHashtagSymbol)
             addTag(tag)
 
             self.textField.text = ""

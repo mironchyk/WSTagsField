@@ -13,8 +13,12 @@ public struct WSTag: Hashable {
     public let text: String
     public let context: AnyHashable?
 
-    public init(_ text: String, context: AnyHashable? = nil) {
-        self.text = text
+   public init(_ text: String, context: AnyHashable? = nil, shouldShowHashtagSymbol : Bool?) {
+        var stringText = text
+        if (shouldShowHashtagSymbol == true && stringText.first != "#") {
+            stringText.insert("#", at: stringText.startIndex)
+        }
+        self.text = stringText
         self.context = context
     }
 
