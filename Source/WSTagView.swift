@@ -18,7 +18,7 @@ open class WSTagView: UIView, UITextInputTraits {
             setNeedsDisplay()
         }
     }
-
+    
     open var displayDelimiter: String = "" {
         didSet {
             updateLabelText()
@@ -56,7 +56,7 @@ open class WSTagView: UIView, UITextInputTraits {
         }
     }
 
-    open override var tintColor: UIColor! {
+    open var tagViewBackgroundColor : UIColor! {
         didSet { updateContent(animated: false) }
     }
 
@@ -134,7 +134,7 @@ open class WSTagView: UIView, UITextInputTraits {
     // MARK: - Styling
 
     fileprivate func updateColors() {
-        self.backgroundColor = selected ? selectedColor : tintColor
+        self.backgroundColor = selected ? selectedColor : tagViewBackgroundColor
         textLabel.textColor = selected ? selectedTextColor : textColor
     }
 
