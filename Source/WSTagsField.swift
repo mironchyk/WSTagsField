@@ -31,13 +31,11 @@ open class WSTagsField: UIScrollView {
 
 
     /// Background color for tag view in normal (non-selected) state.
-    open var tagViewBackgroundColor : UIColor! {
-          didSet {
-              tagViews.forEach {$0.tintColor = self.tagViewBackgroundColor}
-          }
-      }
-    
-    
+    open override var tintColor: UIColor! {
+        didSet {
+            tagViews.forEach { $0.tintColor = self.tintColor }
+        }
+    }
 
     /// Text color for tag view in normal (non-selected) state.
     open var textColor: UIColor? {
