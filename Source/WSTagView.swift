@@ -56,9 +56,10 @@ open class WSTagView: UIView, UITextInputTraits {
         }
     }
 
-    open override var tintColor: UIColor! {
+    open var tagViewBackgroundColor : UIColor! {
         didSet { updateContent(animated: false) }
     }
+    
 
     /// Background color to be used for selected state.
     open var selectedColor: UIColor? {
@@ -115,7 +116,6 @@ open class WSTagView: UIView, UITextInputTraits {
         textLabel.frame = CGRect(x: layoutMargins.left, y: layoutMargins.top, width: 0, height: 0)
         textLabel.font = font
         textLabel.textColor = .white
-        textLabel.backgroundColor = .clear
         addSubview(textLabel)
 
         self.displayText = tag.text
@@ -134,7 +134,7 @@ open class WSTagView: UIView, UITextInputTraits {
     // MARK: - Styling
 
     fileprivate func updateColors() {
-        self.backgroundColor = selected ? selectedColor : tintColor
+        self.backgroundColor = selected ? selectedColor : tagViewBackgroundColor
         textLabel.textColor = selected ? selectedTextColor : textColor
     }
 

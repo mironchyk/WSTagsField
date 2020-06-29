@@ -31,9 +31,9 @@ open class WSTagsField: UIScrollView {
 
 
     /// Background color for tag view in normal (non-selected) state.
-    open override var tintColor: UIColor! {
+    open var tagViewBackgroundColor : UIColor! {
         didSet {
-            tagViews.forEach { $0.tintColor = self.tintColor }
+            tagViews.forEach {$0.tagViewBackgroundColor = self.tagViewBackgroundColor}
         }
     }
 
@@ -70,7 +70,7 @@ open class WSTagsField: UIScrollView {
         }
     }
     
-    /// Whether the text field should tokenize strings automatically when the keyboard is dismissed. 
+    /// Whether the text field should tokenize strings automatically when the keyboard is dismissed.
     open var shouldTokenizeAfterResigningFirstResponder: Bool = false
 
     open var maxHeight: CGFloat = CGFloat.infinity {
@@ -350,8 +350,8 @@ open class WSTagsField: UIScrollView {
     }
 
     open func endEditing() {
-        // NOTE: We used to check if .isFirstResponder and then resign first responder, but sometimes we noticed 
-        // that it would be the first responder, but still return isFirstResponder=NO. 
+        // NOTE: We used to check if .isFirstResponder and then resign first responder, but sometimes we noticed
+        // that it would be the first responder, but still return isFirstResponder=NO.
         // So always attempt to resign without checking.
         self.textField.resignFirstResponder()
     }
@@ -385,7 +385,7 @@ open class WSTagsField: UIScrollView {
 
         let tagView = WSTagView(tag: tag)
         tagView.font = self.font
-        tagView.tintColor = self.tintColor
+        tagView.tagViewBackgroundColor = self.tagViewBackgroundColor
         tagView.textColor = self.textColor
         tagView.selectedColor = self.selectedColor
         tagView.selectedTextColor = self.selectedTextColor
@@ -620,7 +620,6 @@ extension WSTagsField {
         selectedTextColor = .black
 
         clipsToBounds = true
-
         textField.backgroundColor = .clear
         textField.autocorrectionType = UITextAutocorrectionType.no
         textField.autocapitalizationType = UITextAutocapitalizationType.none
