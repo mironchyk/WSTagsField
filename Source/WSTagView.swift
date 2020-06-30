@@ -11,13 +11,16 @@ import UIKit
 open class WSTagView: UIView, UITextInputTraits {
 
     fileprivate let textLabel = UILabel()
-
+    fileprivate let closeButton = UIButton(type: .custom)
+    
     open var displayText: String = "" {
         didSet {
             updateLabelText()
             setNeedsDisplay()
         }
     }
+    
+    open var closeButtonImage : UIImage?
 
     open var displayDelimiter: String = "" {
         didSet {
@@ -103,8 +106,9 @@ open class WSTagView: UIView, UITextInputTraits {
 
     // MARK: - Initializers
 
-    public init(tag: WSTag) {
+    public init(tag: WSTag, closeButtonImage : UIImage? = nil) {
         super.init(frame: CGRect.zero)
+        self.closeButtonImage = closeButtonImage
         self.backgroundColor = tintColor
         self.layer.cornerRadius = cornerRadius
         self.layer.masksToBounds = true
@@ -123,7 +127,20 @@ open class WSTagView: UIView, UITextInputTraits {
 
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer))
         addGestureRecognizer(tapRecognizer)
+        
+        if self.closeButtonImage != nil {
+            closeButton.setTitle(nil, for: .normal)
+            closeButton.setImage(closeButtonImage!, for: .normal)
+            closeButton.addTarget(self, action:#selector(deleteButtonAction) , for: .touchUpInside)
+            closeButton.backgroundColor = .clear
+            addSubview(closeButton)
+        }
         setNeedsLayout()
+    }
+    
+    
+    @objc private func deleteButtonAction () {
+        onDidRequestDelete?(self, nil)
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -166,6 +183,11 @@ open class WSTagView: UIView, UITextInputTraits {
 
     open override var intrinsicContentSize: CGSize {
         let labelIntrinsicSize = textLabel.intrinsicContentSize
+        if self.closeButtonImage != nil {
+            let buttonSize = closeButton.intrinsicContentSize
+            return CGSize(width: labelIntrinsicSize.width + buttonSize.width + layoutMargins.left + layoutMargins.right,
+                                 height: labelIntrinsicSize.height + layoutMargins.top + layoutMargins.bottom)
+        }
         return CGSize(width: labelIntrinsicSize.width + layoutMargins.left + layoutMargins.right,
                       height: labelIntrinsicSize.height + layoutMargins.top + layoutMargins.bottom)
     }
@@ -201,6 +223,10 @@ open class WSTagView: UIView, UITextInputTraits {
     open override func layoutSubviews() {
         super.layoutSubviews()
         textLabel.frame = bounds.inset(by: layoutMargins)
+        if self.closeButtonImage != nil {
+             closeButton.frame = CGRect(x: textLabel.frame.origin.x + textLabel.frame.size.width - 15, y: layoutMargins.top, width: self.closeButtonImage!.size.width, height: self.closeButtonImage!.size.height)
+        }
+       
         if frame.width == 0 || frame.height == 0 {
             frame.size = self.intrinsicContentSize
         }

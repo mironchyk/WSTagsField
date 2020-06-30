@@ -31,6 +31,13 @@ open class WSTagsField: UIScrollView {
 
 
     /// Background color for tag view in normal (non-selected) state.
+    open var closeButtonImage : UIImage? {
+        didSet {
+            tagViews.forEach{$0.closeButtonImage = self.closeButtonImage}
+        }
+    }
+    
+    
     open var tagViewBackgroundColor : UIColor! {
         didSet {
             tagViews.forEach {$0.tagViewBackgroundColor = self.tagViewBackgroundColor}
@@ -383,7 +390,7 @@ open class WSTagsField: UIScrollView {
 
         self.tags.append(tag)
 
-        let tagView = WSTagView(tag: tag)
+        let tagView = WSTagView(tag: tag, closeButtonImage : self.closeButtonImage)
         tagView.font = self.font
         tagView.tagViewBackgroundColor = self.tagViewBackgroundColor
         tagView.textColor = self.textColor
@@ -612,8 +619,8 @@ extension WSTagsField {
 extension WSTagsField {
 
     fileprivate func internalInit() {
-        self.isScrollEnabled = false
-        self.showsHorizontalScrollIndicator = false
+        self.isScrollEnabled = true
+        self.showsHorizontalScrollIndicator = true
 
         textColor = .white
         selectedColor = .gray
@@ -756,7 +763,7 @@ extension WSTagsField {
         }
 
         if self.enableScrolling {
-            self.isScrollEnabled = contentRect.height + contentInset.top + contentInset.bottom > newIntrinsicContentHeight
+            self.isScrollEnabled = true//contentRect.height + contentInset.top + contentInset.bottom > newIntrinsicContentHeight
         }
         self.contentSize.width = self.bounds.width - contentInset.left - contentInset.right
         self.contentSize.height = contentRect.height
