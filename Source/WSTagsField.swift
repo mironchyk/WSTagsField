@@ -756,9 +756,10 @@ extension WSTagsField {
                 contentRect = tagRect.union(contentRect)
             }
             else if let textFieldRect = textFieldRect {
+                textField.frame = textFieldRect
+
                 if (self.tags.count != 3) {
                     contentRect = textFieldRect.union(contentRect)
-                    textField.frame = textFieldRect
                 }
                 
             }
