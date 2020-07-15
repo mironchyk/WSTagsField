@@ -12,11 +12,18 @@ open class WSTagView: UIView, UITextInputTraits {
     
     let textLabel = UILabel()
     fileprivate let closeButton = UIButton(type: .custom)
+    fileprivate let imageView : UIImageView = UIImageView()
     
     open var displayText: String = "" {
         didSet {
             updateLabelText()
             setNeedsDisplay()
+        }
+    }
+    
+    open var topicsImage : UIImage? {
+        didSet {
+            self.imageView.image = topicsImage
         }
     }
     
@@ -110,9 +117,10 @@ open class WSTagView: UIView, UITextInputTraits {
     
     // MARK: - Initializers
     
-    public init(tag: WSTag, closeButtonImage : UIImage? = nil) {
+    public init(tag: WSTag, closeButtonImage : UIImage? = nil, topicsImage : UIImage? = nil) {
         super.init(frame: CGRect.zero)
         self.closeButtonImage = closeButtonImage
+        self.topicsImage = topicsImage
         self.backgroundColor = tintColor
         self.layer.cornerRadius = cornerRadius
         self.layer.masksToBounds = true
@@ -129,6 +137,8 @@ open class WSTagView: UIView, UITextInputTraits {
         self.displayText = tag.text
         updateLabelText()
         textLabel.translatesAutoresizingMaskIntoConstraints = false
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        self.translatesAutoresizingMaskIntoConstraints = false
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer))
         addGestureRecognizer(tapRecognizer)
@@ -140,6 +150,13 @@ open class WSTagView: UIView, UITextInputTraits {
             closeButton.backgroundColor = .clear
             addSubview(closeButton)
         }
+        
+        if self.topicsImage != nil {
+            imageView.image = self.topicsImage
+            imageView.contentMode = .center
+            addSubview(imageView)
+        }
+        
         setNeedsLayout()
     }
     
@@ -193,6 +210,11 @@ open class WSTagView: UIView, UITextInputTraits {
             return CGSize(width: labelIntrinsicSize.width + buttonSize.width + layoutMargins.left + layoutMargins.right,
                           height: labelIntrinsicSize.height + layoutMargins.top + layoutMargins.bottom)
         }
+        if self.topicsImage != nil {
+            let imageSize = imageView.intrinsicContentSize
+            return CGSize(width: labelIntrinsicSize.width + imageSize.width  + layoutMargins.left*2 + layoutMargins.right,
+                                     height: labelIntrinsicSize.height + layoutMargins.top + layoutMargins.bottom)
+        }
         return CGSize(width: labelIntrinsicSize.width + layoutMargins.left + layoutMargins.right,
                       height: labelIntrinsicSize.height + layoutMargins.top + layoutMargins.bottom)
     }
@@ -228,8 +250,14 @@ open class WSTagView: UIView, UITextInputTraits {
     open override func layoutSubviews() {
         super.layoutSubviews()
         textLabel.frame = bounds.inset(by: layoutMargins)
+        
         if self.closeButtonImage != nil {
             closeButton.frame = CGRect(x: textLabel.frame.origin.x + textLabel.frame.size.width - 15, y: layoutMargins.top, width: self.closeButtonImage!.size.width, height: self.closeButtonImage!.size.height)
+        }
+        if self.topicsImage != nil {
+            if imageView.frame.origin.x == 0.0 {
+                 imageView.frame = CGRect(x: textLabel.frame.origin.x + textLabel.frame.size.width - 15, y: layoutMargins.top, width: self.topicsImage!.size.width, height: self.topicsImage!.size.height)
+            }
         }
         
         if frame.width == 0 || frame.height == 0 {

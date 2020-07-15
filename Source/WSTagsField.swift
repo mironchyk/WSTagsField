@@ -38,6 +38,12 @@ open class WSTagsField: UIScrollView {
         }
     }
     
+    open var topicsImage : UIImage? {
+        didSet {
+            tagViews.forEach{$0.topicsImage = self.topicsImage}
+        }
+    }
+    
     
     open var tagViewBackgroundColor : UIColor! {
         didSet {
@@ -406,7 +412,7 @@ open class WSTagsField: UIScrollView {
         
         self.tags.append(tag)
         
-        let tagView = WSTagView(tag: tag, closeButtonImage : self.closeButtonImage)
+        let tagView = WSTagView(tag: tag, closeButtonImage : self.closeButtonImage, topicsImage: self.topicsImage)
         tagView.font = self.font
         tagView.tagViewBackgroundColor = self.tagViewBackgroundColor
         tagView.textColor = self.textColor
