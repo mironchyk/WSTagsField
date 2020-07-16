@@ -228,12 +228,14 @@ open class WSTagsField: UIScrollView {
     
     open fileprivate(set) var tags = [WSTag]()
     open var allowsMultipleSelection: Bool = false {
-            didSet {
-                tagViews.forEach { $0.allowsMultipleSelection = allowsMultipleSelection }
-            }
+        didSet {
+            tagViews.forEach { $0.allowsMultipleSelection = allowsMultipleSelection }
         }
-
-         open var autoSelectTagWhenAdded: Bool = false
+    }
+    
+    open var autoSelectTagWhenAdded: Bool = false
+    
+    open var maxMultipleSelectedItems : Int = 1
     
     open var tagViews = [WSTagView]()
     
@@ -521,11 +523,11 @@ open class WSTagsField: UIScrollView {
             }
             addTag(tag)
             if let tagView = tagViews.last, autoSelectTagWhenAdded {
-            //There's a bug that causes the text to be truncated during animation ("New York" becomes "New Y..."). This delays animating the TagView until after it's set in the TextField.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                self.toggleTagView(tagView, animated: false)
-                                }
-                            }
+                //There's a bug that causes the text to be truncated during animation ("New York" becomes "New Y..."). This delays animating the TagView until after it's set in the TextField.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    self.toggleTagView(tagView, animated: false)
+                }
+            }
             
             self.textField.text = ""
             onTextFieldDidChange(self.textField)
@@ -574,20 +576,28 @@ open class WSTagsField: UIScrollView {
         if self.readOnly {
             return
         }
-        
-        tagView.selected = !tagView.selected
-        if !allowsMultipleSelection {
-        tagViews.filter { $0 != tagView }.forEach {
-            $0.selected = false
-            onDidUnselectTagView?(self, $0)
+        if (allowsMultipleSelection) {
+            if (getSelectedTagStrings().count < self.maxMultipleSelectedItems) {
+                tagView.selected = !tagView.selected
+            } else if (tagView.selected == true) {
+                tagView.selected = !tagView.selected
+            }
+        } else {
+            tagView.selected = !tagView.selected
         }
+        
+        if !allowsMultipleSelection {
+            tagViews.filter { $0 != tagView }.forEach {
+                $0.selected = false
+                onDidUnselectTagView?(self, $0)
+            }
         }
         
         if tagView.selected {
             onDidSelectTagView?(self, tagView)
         } else {
             onDidUnselectTagView?(self, tagView)
-
+            
         }
     }
     
@@ -699,8 +709,8 @@ extension WSTagsField {
                 return
             }
             if self?.allowsMultipleSelection == true, self?.textField.text?.isEmpty == true, let lastTag = self?.tags.last {
-                            self?.removeTag(lastTag)
-                            return
+                self?.removeTag(lastTag)
+                return
             }
             
             if self?.isTextFieldEmpty == true, let tagView = self?.tagViews.last {
@@ -806,7 +816,7 @@ extension WSTagsField {
             }
             else if let textFieldRect = textFieldRect {
                 textField.frame = textFieldRect
-
+                
                 if (self.tags.count != 3) {
                     contentRect = textFieldRect.union(contentRect)
                 }
