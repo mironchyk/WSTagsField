@@ -827,14 +827,7 @@ extension WSTagsField {
         self.contentSize.width = contentRect.width
         self.contentSize.height = contentRect.height
         self.isScrollEnabled = true
-        if (self.tags.count == 3) {
-            guard let tagToScrollTo = tagViews.last else {return}
-            let scrollWidth = self.bounds.width
-            let scrollHeight = textField.frame.size.height
-            let desiredXCoor = tagToScrollTo.frame.origin.x - ((scrollWidth / 2) - (tagToScrollTo.frame.width / 2) )
-            let rect = CGRect(x: desiredXCoor, y: 0, width: scrollWidth, height: scrollHeight)
-            self.scrollRectToVisible(rect, animated: false)
-        } else {
+        if (self.tags.count != 3) {
             self.scrollRectToVisible(textField.frame, animated: false)
         }
         self.isScrollEnabled = false
